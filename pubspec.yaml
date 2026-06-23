@@ -1,0 +1,31 @@
+name: hovr_native_platform_view
+description: Native PlatformView widgets for HOVR apps with strict engineering standards.
+version: 0.1.0
+homepage: https://github.com/vishalsharma-hovr/hovr_native_platform_view
+repository: https://github.com/vishalsharma-hovr/hovr_native_platform_view
+publish_to: none
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.ridehovr.hovr_native_platform_view
+        pluginClass: HovrNativePlatformViewPlugin
+      ios:
+        pluginClass: HovrNativePlatformViewPlugin
+  assets:
+    - assets/country_code.json

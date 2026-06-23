@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - hovr_native_platform_view (0.1.0):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - hovr_native_platform_view (from `.symlinks/plugins/hovr_native_platform_view/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  hovr_native_platform_view:
+    :path: ".symlinks/plugins/hovr_native_platform_view/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  hovr_native_platform_view: 74197a4d3f1f56f9d64cd860422df9ce168d0801
+
+PODFILE CHECKSUM: ce2a4dd764e1c7aeed6a7cdc5e61d092b6dc6d32
+
+COCOAPODS: 1.16.2
