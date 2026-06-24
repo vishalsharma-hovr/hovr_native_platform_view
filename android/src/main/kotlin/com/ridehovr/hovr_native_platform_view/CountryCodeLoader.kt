@@ -13,6 +13,14 @@ object CountryCodeLoader {
     @Volatile
     private var cached: List<CountryItem>? = null
 
+    fun loadSync(context: Context): List<CountryItem> {
+        cached?.let { return it }
+
+        val loaded = loadFromAssets(context)
+        cached = loaded
+        return loaded
+    }
+
     suspend fun load(context: Context): List<CountryItem> {
         cached?.let { return it }
 

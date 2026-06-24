@@ -45,13 +45,9 @@ fun PhoneEntryScreen(
     onSubmit: (phoneNumber: String, dialCode: String, countryIso: String) -> Unit,
 ) {
     val context = LocalContext.current
-    var countries by remember { mutableStateOf<List<CountryItem>>(emptyList()) }
-    var isCountriesLoading by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
-        countries = CountryCodeLoader.load(context)
-        isCountriesLoading = false
-    }
+    val initialCountries = remember(context) { CountryCodeLoader.loadSync(context) }
+    var countries by remember(initialCountries) { mutableStateOf(initialCountries) }
+    var isCountriesLoading by remember { mutableStateOf(false) }
     var dialCode by remember { mutableStateOf("+1") }
     var countryIso by remember { mutableStateOf("CA") }
     var countryFlag by remember { mutableStateOf("🇨🇦") }
