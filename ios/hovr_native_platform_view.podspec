@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'hovr_native_platform_view'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Native PlatformView widgets for HOVR Flutter apps.'
   s.description      = <<-DESC
 Native phone-entry PlatformView with typed method-channel contract for HOVR apps.
@@ -15,6 +15,7 @@ Native phone-entry PlatformView with typed method-channel contract for HOVR apps
   s.source_files     = 'Classes/**/*'
   s.resources        = ['Resources/**/*']
   s.dependency 'Flutter'
+  s.dependency 'PhoneNumberKit', '~> 4.0'
   s.platform         = :ios, '15.0'
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',

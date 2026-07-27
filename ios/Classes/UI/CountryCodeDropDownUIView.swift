@@ -4,6 +4,7 @@ struct CountryCodeDropDownUIView: View {
     @Binding var isDropDown: Bool
     let countries: [CountryCodeItem]
     let isCountriesLoading: Bool
+    var mobileNumberLabel: String = "Mobile Number"
     let onPhoneChanged: (_ showContinue: Bool, _ phone: String, _ dialCode: String, _ countryIso: String) -> Void
 
     @State private var countryFlag = "🇨🇦"
@@ -17,7 +18,7 @@ struct CountryCodeDropDownUIView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                Text("Mobile Number")
+                Text(mobileNumberLabel)
                     .font(.system(size: 14, weight: .regular))
                     .foregroundStyle(PhoneEntryTheme.grey600)
 
@@ -69,7 +70,10 @@ struct CountryCodeDropDownUIView: View {
                                         .onChange(of: mobileNumber) { newValue in
                                             let digits = newValue.filter(\.isNumber)
                                             mobileNumber = digits
-                                            if PhoneEntryValidation.canEnableContinue(phone: digits) {
+                                            if PhoneEntryValidation.canEnableContinue(
+                                                phone: digits,
+                                                regionIso: countryCodeISO
+                                            ) {
                                                 validMobileNumber = true
                                                 onPhoneChanged(
                                                     true,
@@ -111,7 +115,10 @@ struct CountryCodeDropDownUIView: View {
                         countryCodeISO = iso
                         iconName = "arrowtriangle.down.fill"
                         onPhoneChanged(
-                            PhoneEntryValidation.canEnableContinue(phone: mobileNumber),
+                            PhoneEntryValidation.canEnableContinue(
+                                phone: mobileNumber,
+                                regionIso: countryCodeISO
+                            ),
                             mobileNumber,
                             countryCode,
                             countryCodeISO

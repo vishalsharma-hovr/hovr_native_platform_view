@@ -10,14 +10,16 @@ final class PhoneEntryPlatformView: NSObject, FlutterPlatformView {
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
-        messenger: FlutterBinaryMessenger
+        messenger: FlutterBinaryMessenger,
+        args: Any?
     ) {
+        let copy = PhoneEntryCopy.fromArgs(args)
         channel = FlutterMethodChannel(
             name: PhoneEntryChannelConstants.channelName(viewId: viewId),
             binaryMessenger: messenger
         )
         hostingController = UIHostingController(
-            rootView: PhoneEntryUIView(viewModel: viewModel)
+            rootView: PhoneEntryUIView(viewModel: viewModel, copy: copy)
         )
         super.init()
 

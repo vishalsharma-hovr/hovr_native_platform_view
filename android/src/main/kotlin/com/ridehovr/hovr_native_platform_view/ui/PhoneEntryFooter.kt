@@ -18,18 +18,21 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 
 @Composable
-internal fun PhoneEntryFooter(modifier: Modifier = Modifier) {
+internal fun PhoneEntryFooter(
+    copy: PhoneEntryCopy,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
         Text(
-            text = "By proceeding, you consent to get calls, WhatsApp or SMS messages, including by automated dialer, from Hovr and its affiliates to your provided number. You can opt out any time.",
+            text = copy.consentText,
             style = TextStyle(fontSize = 12.sp, color = PhoneEntryColors.grey600),
             modifier = Modifier.padding(bottom = 10.dp),
         )
 
         val legalText = buildAnnotatedString {
-            append("This site is protected by reCAPTCHA and the AWS ")
+            append(copy.recaptchaPrefix)
 
             pushStringAnnotation(tag = "PRIVACY_POLICY", annotation = "https://aws.amazon.com/privacy/")
             withStyle(
@@ -39,11 +42,11 @@ internal fun PhoneEntryFooter(modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.SemiBold,
                 ),
             ) {
-                append("Privacy Policy")
+                append(copy.privacyPolicyLabel)
             }
             pop()
 
-            append(" and ")
+            append(copy.recaptchaAnd)
 
             pushStringAnnotation(tag = "TERMS_OF_SERVICE", annotation = "https://aws.amazon.com/service-terms/")
             withStyle(
@@ -53,11 +56,11 @@ internal fun PhoneEntryFooter(modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.SemiBold,
                 ),
             ) {
-                append("Terms of Service")
+                append(copy.termsOfServiceLabel)
             }
             pop()
 
-            append(" apply.")
+            append(copy.recaptchaSuffix)
         }
 
         ClickableText(

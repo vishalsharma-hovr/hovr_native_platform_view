@@ -1,3 +1,8 @@
+## 0.1.1
+
+- Pass localized phone-entry strings from Flutter via platform-view creation params
+- Validate phone numbers worldwide with libphonenumber (Android) and PhoneNumberKit (iOS)
+
 # Changelog
 
 All notable changes to this project are documented in this file.

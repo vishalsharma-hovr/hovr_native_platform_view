@@ -44,7 +44,7 @@ final class PhoneEntryViewModel: ObservableObject {
             return
         }
 
-        if !PhoneEntryValidation.isValidPhone(phone: phoneNumber, dialCode: dialCode) {
+        if !PhoneEntryValidation.isValidPhone(phone: phoneNumber, regionIso: countryIso) {
             showValidationError = true
             return
         }

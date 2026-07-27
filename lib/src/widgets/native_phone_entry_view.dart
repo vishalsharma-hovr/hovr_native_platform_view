@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../constants/view_types.dart';
 import '../models/phone_entry_result.dart';
+import '../models/phone_entry_strings.dart';
 import '../models/phone_submission.dart';
 import '../platform/phone_entry_channel.dart';
 import 'native_platform_view.dart';
@@ -38,12 +39,14 @@ class NativePhoneEntryView extends StatefulWidget {
     required this.onSubmitted,
     this.controller,
     this.onValidationError,
+    this.strings = const PhoneEntryStrings(),
     super.key,
   });
 
   final ValueChanged<PhoneSubmission> onSubmitted;
   final PhoneEntryController? controller;
   final ValueChanged<String>? onValidationError;
+  final PhoneEntryStrings strings;
 
   @override
   State<NativePhoneEntryView> createState() => _NativePhoneEntryViewState();
@@ -78,9 +81,12 @@ class _NativePhoneEntryViewState extends State<NativePhoneEntryView> {
   @override
   Widget build(BuildContext context) {
     return NativePlatformView(
-      key: const ValueKey(ViewTypes.phoneEntry),
+      key: ValueKey('${ViewTypes.phoneEntry}_${widget.strings.title}'),
       viewType: ViewTypes.phoneEntry,
-      creationParams: const {'id': ViewCreationParams.defaultId},
+      creationParams: {
+        'id': ViewCreationParams.defaultId,
+        ...widget.strings.toCreationParams(),
+      },
       onPlatformViewCreated: _onPlatformViewCreated,
     );
   }

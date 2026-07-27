@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
+import com.ridehovr.hovr_native_platform_view.ui.PhoneEntryCopy
 import com.ridehovr.hovr_native_platform_view.ui.PhoneEntryScreen
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
@@ -14,6 +15,7 @@ class PhoneEntryPlatformView(
     context: Context,
     messenger: BinaryMessenger,
     viewId: Int,
+    creationParams: Map<*, *>?,
 ) : PlatformView {
 
     private val channel = MethodChannel(
@@ -21,6 +23,7 @@ class PhoneEntryPlatformView(
         PhoneEntryChannelConstants.channelName(viewId),
     )
     private val externalShowValidationError = mutableStateOf(false)
+    private val copy = PhoneEntryCopy.fromArgs(creationParams)
     private val composeView = ComposeView(context)
 
     init {
@@ -28,6 +31,7 @@ class PhoneEntryPlatformView(
         channel.setMethodCallHandler(::handleDartCall)
         composeView.setContent {
             PhoneEntryScreen(
+                copy = copy,
                 externalShowValidationError = externalShowValidationError.value,
                 onSubmit = ::sendSubmission,
             )

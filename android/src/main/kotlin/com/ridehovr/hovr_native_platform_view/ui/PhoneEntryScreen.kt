@@ -41,13 +41,18 @@ import com.ridehovr.hovr_native_platform_view.CountryCodeLoader
 
 @Composable
 fun PhoneEntryScreen(
+    copy: PhoneEntryCopy = PhoneEntryCopy(),
     externalShowValidationError: Boolean,
     onSubmit: (phoneNumber: String, dialCode: String, countryIso: String) -> Unit,
 ) {
     val context = LocalContext.current
-    val initialCountries = remember(context) { CountryCodeLoader.loadSync(context) }
-    var countries by remember(initialCountries) { mutableStateOf(initialCountries) }
-    var isCountriesLoading by remember { mutableStateOf(false) }
+    var countries by remember { mutableStateOf<List<CountryItem>>(emptyList()) }
+    var isCountriesLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        countries = CountryCodeLoader.load(context)
+        isCountriesLoading = false
+    }
     var dialCode by remember { mutableStateOf("+1") }
     var countryIso by remember { mutableStateOf("CA") }
     var countryFlag by remember { mutableStateOf("🇨🇦") }
@@ -73,7 +78,7 @@ fun PhoneEntryScreen(
             .padding(top = 2.dp),
     ) {
         Text(
-            text = "Enter your phone number",
+            text = copy.title,
             style = TextStyle(
                 fontSize = 24.sp,
                 lineHeight = 28.8.sp,
@@ -84,7 +89,7 @@ fun PhoneEntryScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "We'll text you a code to verify it.",
+            text = copy.subtitle,
             style = TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
@@ -104,7 +109,7 @@ fun PhoneEntryScreen(
         ) {
             Column {
                 Text(
-                    text = "Mobile Number",
+                    text = copy.mobileNumberLabel,
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
@@ -127,7 +132,7 @@ fun PhoneEntryScreen(
                         focusRequester = focusRequester,
                         onPhoneNumberChange = { value ->
                             phoneNumber = value
-                            canContinue = PhoneEntryValidation.canEnableContinue(value)
+                            canContinue = PhoneEntryValidation.canEnableContinue(value, countryIso)
                             if (canContinue) {
                                 showValidationError = false
                             }
@@ -150,7 +155,7 @@ fun PhoneEntryScreen(
                     countryIso = country.code
                     countryFlag = country.flag
                     isDropDownOpen = false
-                    canContinue = PhoneEntryValidation.canEnableContinue(phoneNumber)
+                    canContinue = PhoneEntryValidation.canEnableContinue(phoneNumber, countryIso)
                 },
                 modifier = Modifier
                     .padding(top = 88.dp)
@@ -176,7 +181,11 @@ fun PhoneEntryScreen(
                         .height(15.dp),
                 )
                 Text(
-                    text = PhoneEntryValidation.errorMessage(phoneNumber),
+                    text = PhoneEntryValidation.errorMessage(
+                        phoneNumber,
+                        copy.emptyPhoneError,
+                        copy.invalidPhoneError,
+                    ),
                     style = TextStyle(
                         fontSize = 13.sp,
                         lineHeight = 18.2.sp,
@@ -205,7 +214,7 @@ fun PhoneEntryScreen(
                     .clickable {
                         when {
                             phoneNumber.isEmpty() -> showValidationError = true
-                            !PhoneEntryValidation.isValidPhone(phoneNumber, dialCode) -> {
+                            !PhoneEntryValidation.isValidPhone(phoneNumber, countryIso) -> {
                                 showValidationError = true
                             }
                             !canContinue -> showValidationError = true
@@ -218,7 +227,7 @@ fun PhoneEntryScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Continue",
+                    text = copy.continueLabel,
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -231,7 +240,7 @@ fun PhoneEntryScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         if (!keyboardOpen) {
-            PhoneEntryFooter()
+            PhoneEntryFooter(copy = copy)
             Spacer(modifier = Modifier.height(50.dp))
         }
     }

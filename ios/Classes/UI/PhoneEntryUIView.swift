@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PhoneEntryUIView: View {
     @ObservedObject var viewModel: PhoneEntryViewModel
+    var copy: PhoneEntryCopy = PhoneEntryCopy()
 
     @State private var keyboardShowToken: NSObjectProtocol?
     @State private var keyboardHideToken: NSObjectProtocol?
@@ -22,6 +23,7 @@ struct PhoneEntryUIView: View {
                     isDropDown: $isDropdownOpen,
                     countries: viewModel.countries,
                     isCountriesLoading: viewModel.isCountriesLoading,
+                    mobileNumberLabel: copy.mobileNumberLabel,
                     onPhoneChanged: viewModel.updatePhoneState
                 )
                 .padding(.horizontal, 16)
@@ -50,10 +52,10 @@ struct PhoneEntryUIView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Enter your phone number")
+            Text(copy.title)
                 .font(.system(size: 24, weight: .semibold))
                 .foregroundStyle(PhoneEntryTheme.black900)
-            Text("We'll text you a code to verify it.")
+            Text(copy.subtitle)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(PhoneEntryTheme.grey600)
         }
@@ -69,7 +71,13 @@ struct PhoneEntryUIView: View {
                 Image(systemName: "exclamationmark.circle.fill")
                     .frame(width: 15, height: 15)
                     .foregroundColor(PhoneEntryTheme.errorCode)
-                Text(PhoneEntryValidation.errorMessage(phone: viewModel.phoneNumber))
+                Text(
+                    PhoneEntryValidation.errorMessage(
+                        phone: viewModel.phoneNumber,
+                        emptyMessage: copy.emptyPhoneError,
+                        invalidMessage: copy.invalidPhoneError
+                    )
+                )
                     .font(.system(size: 13, weight: .regular))
                     .foregroundColor(PhoneEntryTheme.errorCode)
                     .multilineTextAlignment(.leading)
@@ -88,7 +96,7 @@ struct PhoneEntryUIView: View {
                 .frame(height: 60)
                 .padding(.horizontal, 16)
                 .overlay {
-                    Text("Continue")
+                    Text(copy.continueLabel)
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(PhoneEntryTheme.white000)
                 }
@@ -98,9 +106,7 @@ struct PhoneEntryUIView: View {
 
     private var footerSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(
-                "By proceeding, you consent to get calls, WhatsApp or SMS messages, including by automated dialer, from Hovr and its affiliates to your provided number. You can opt out any time."
-            )
+            Text(copy.consentText)
             .font(.system(size: 12))
             .foregroundStyle(PhoneEntryTheme.grey600)
 
@@ -117,16 +123,16 @@ struct PhoneEntryUIView: View {
 
     private func makeAttributedLegalText() -> AttributedString {
         var string = AttributedString(
-            "This site is protected by reCAPTCHA and the AWS Privacy Policy and Terms of Service apply."
+            "\(copy.recaptchaPrefix)\(copy.privacyPolicyLabel)\(copy.recaptchaAnd)\(copy.termsOfServiceLabel)\(copy.recaptchaSuffix)"
         )
 
-        if let privacyRange = string.range(of: "Privacy Policy") {
+        if let privacyRange = string.range(of: copy.privacyPolicyLabel) {
             string[privacyRange].foregroundColor = PhoneEntryTheme.primaryBrand
             string[privacyRange].font = .system(size: 12, weight: .semibold)
             string[privacyRange].link = URL(string: "https://aws.amazon.com/privacy/")
         }
 
-        if let termsRange = string.range(of: "Terms of Service") {
+        if let termsRange = string.range(of: copy.termsOfServiceLabel) {
             string[termsRange].foregroundColor = PhoneEntryTheme.primaryBrand
             string[termsRange].font = .system(size: 12, weight: .semibold)
             string[termsRange].link = URL(string: "https://aws.amazon.com/service-terms/")

@@ -11,6 +11,8 @@ class PhoneEntryViewFactory(
 ) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-        return PhoneEntryPlatformView(context, messenger, viewId)
+        @Suppress("UNCHECKED_CAST")
+        val creationParams = args as? Map<*, *>
+        return PhoneEntryPlatformView(context, messenger, viewId, creationParams)
     }
 }
