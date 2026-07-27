@@ -24,6 +24,7 @@ struct PhoneEntryUIView: View {
                     countries: viewModel.countries,
                     isCountriesLoading: viewModel.isCountriesLoading,
                     mobileNumberLabel: copy.mobileNumberLabel,
+                    countrySearchHint: copy.countrySearchHint,
                     onPhoneChanged: viewModel.updatePhoneState
                 )
                 .padding(.horizontal, 16)

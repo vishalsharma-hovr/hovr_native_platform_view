@@ -8,6 +8,7 @@ class PhoneEntryStrings {
     this.title = 'Enter your phone number',
     this.subtitle = "We'll text you a code to verify it.",
     this.mobileNumberLabel = 'Mobile Number',
+    this.countrySearchHint = 'Search country',
     this.continueLabel = 'Continue',
     this.emptyPhoneError = 'Please enter your phone number.',
     this.invalidPhoneError =
@@ -24,6 +25,7 @@ class PhoneEntryStrings {
   final String title;
   final String subtitle;
   final String mobileNumberLabel;
+  final String countrySearchHint;
   final String continueLabel;
   final String emptyPhoneError;
   final String invalidPhoneError;
@@ -39,6 +41,7 @@ class PhoneEntryStrings {
       'title': title,
       'subtitle': subtitle,
       'mobileNumberLabel': mobileNumberLabel,
+      'countrySearchHint': countrySearchHint,
       'continueLabel': continueLabel,
       'emptyPhoneError': emptyPhoneError,
       'invalidPhoneError': invalidPhoneError,
@@ -69,6 +72,7 @@ class PhoneEntryStrings {
       title: read('title', defaults.title),
       subtitle: read('subtitle', defaults.subtitle),
       mobileNumberLabel: read('mobileNumberLabel', defaults.mobileNumberLabel),
+      countrySearchHint: read('countrySearchHint', defaults.countrySearchHint),
       continueLabel: read('continueLabel', defaults.continueLabel),
       emptyPhoneError: read('emptyPhoneError', defaults.emptyPhoneError),
       invalidPhoneError: read('invalidPhoneError', defaults.invalidPhoneError),

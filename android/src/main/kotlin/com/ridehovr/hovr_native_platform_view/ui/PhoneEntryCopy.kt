@@ -4,6 +4,7 @@ data class PhoneEntryCopy(
     val title: String = "Enter your phone number",
     val subtitle: String = "We'll text you a code to verify it.",
     val mobileNumberLabel: String = "Mobile Number",
+    val countrySearchHint: String = "Search country",
     val continueLabel: String = "Continue",
     val emptyPhoneError: String = "Please enter your phone number.",
     val invalidPhoneError: String =
@@ -28,6 +29,7 @@ data class PhoneEntryCopy(
                 title = read("title", defaults.title),
                 subtitle = read("subtitle", defaults.subtitle),
                 mobileNumberLabel = read("mobileNumberLabel", defaults.mobileNumberLabel),
+                countrySearchHint = read("countrySearchHint", defaults.countrySearchHint),
                 continueLabel = read("continueLabel", defaults.continueLabel),
                 emptyPhoneError = read("emptyPhoneError", defaults.emptyPhoneError),
                 invalidPhoneError = read("invalidPhoneError", defaults.invalidPhoneError),

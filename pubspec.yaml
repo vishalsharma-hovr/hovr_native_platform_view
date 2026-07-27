@@ -1,6 +1,6 @@
 name: hovr_native_platform_view
 description: Native PlatformView widgets for HOVR apps with strict engineering standards.
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/vishalsharma-hovr/hovr_native_platform_view
 repository: https://github.com/vishalsharma-hovr/hovr_native_platform_view
 publish_to: none

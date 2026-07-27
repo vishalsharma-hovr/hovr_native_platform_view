@@ -4,6 +4,7 @@ struct PhoneEntryCopy {
     var title: String = "Enter your phone number"
     var subtitle: String = "We'll text you a code to verify it."
     var mobileNumberLabel: String = "Mobile Number"
+    var countrySearchHint: String = "Search country"
     var continueLabel: String = "Continue"
     var emptyPhoneError: String = "Please enter your phone number."
     var invalidPhoneError: String =
@@ -33,6 +34,7 @@ struct PhoneEntryCopy {
             title: read("title", defaults.title),
             subtitle: read("subtitle", defaults.subtitle),
             mobileNumberLabel: read("mobileNumberLabel", defaults.mobileNumberLabel),
+            countrySearchHint: read("countrySearchHint", defaults.countrySearchHint),
             continueLabel: read("continueLabel", defaults.continueLabel),
             emptyPhoneError: read("emptyPhoneError", defaults.emptyPhoneError),
             invalidPhoneError: read("invalidPhoneError", defaults.invalidPhoneError),

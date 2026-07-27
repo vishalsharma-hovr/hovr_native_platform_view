@@ -5,6 +5,7 @@ struct CountryCodeDropDownUIView: View {
     let countries: [CountryCodeItem]
     let isCountriesLoading: Bool
     var mobileNumberLabel: String = "Mobile Number"
+    var countrySearchHint: String = "Search country"
     let onPhoneChanged: (_ showContinue: Bool, _ phone: String, _ dialCode: String, _ countryIso: String) -> Void
 
     @State private var countryFlag = "🇨🇦"
@@ -59,14 +60,16 @@ struct CountryCodeDropDownUIView: View {
                                         }
                                     }
 
-                                HStack {
+                                HStack(alignment: .center, spacing: 6) {
                                     Text(countryCode)
                                         .font(.system(size: 16))
                                         .foregroundStyle(.black)
-                                        .padding(.leading, 17)
                                     TextField("", text: $mobileNumber)
+                                        .textFieldStyle(.plain)
+                                        .font(.system(size: 16))
                                         .keyboardType(.numberPad)
                                         .focused($mobileNumberIsFocused)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                                         .onChange(of: mobileNumber) { newValue in
                                             let digits = newValue.filter(\.isNumber)
                                             mobileNumber = digits
@@ -98,6 +101,8 @@ struct CountryCodeDropDownUIView: View {
                                             mobileNumberIsFocused = true
                                         }
                                 }
+                                .padding(.horizontal, 17)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                             }
                         }
                 }
@@ -108,6 +113,7 @@ struct CountryCodeDropDownUIView: View {
                 ExpandedDropDownView(
                     countries: countries,
                     isLoading: isCountriesLoading,
+                    searchHint: countrySearchHint,
                     showDropDown: $isDropDown,
                     selectedData: { flag, dialCode, iso in
                         countryCode = dialCode
@@ -145,11 +151,30 @@ struct CountryFlagView: View {
     }
 }
 
+/// Avoid first-tap-dismisses-keyboard eating row selection (iOS 16+).
+private struct KeepKeyboardOnScrollModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.scrollDismissesKeyboard(.never)
+        } else {
+            content
+        }
+    }
+}
+
 struct ExpandedDropDownView: View {
     let countries: [CountryCodeItem]
     let isLoading: Bool
+    var searchHint: String = "Search country"
     @Binding var showDropDown: Bool
     let selectedData: (_ countryFlag: String, _ countryCode: String, _ countryCodeISO: String) -> Void
+
+    @State private var searchQuery = ""
+    @FocusState private var searchIsFocused: Bool
+
+    private var filteredCountries: [CountryCodeItem] {
+        Self.filterCountries(countries, query: searchQuery)
+    }
 
     var body: some View {
         if showDropDown {
@@ -166,37 +191,83 @@ struct ExpandedDropDownView: View {
                             .tint(PhoneEntryTheme.primaryBrand)
                             .offset(y: 175)
                     } else {
-                        ScrollView {
-                            VStack {
-                                ForEach(countries) { country in
-                                    Button {
-                                        showDropDown = false
-                                        selectedData(country.flag, country.dial_code, country.code)
-                                    } label: {
+                        VStack(spacing: 0) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(PhoneEntryTheme.grey600)
+                                    .font(.system(size: 14))
+                                TextField(searchHint, text: $searchQuery)
+                                    .textFieldStyle(.plain)
+                                    .font(.system(size: 14))
+                                    .focused($searchIsFocused)
+                                    .textInputAutocapitalization(.never)
+                                    .disableAutocorrection(true)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            .background(PhoneEntryTheme.grey025)
+                            .cornerRadius(8)
+                            .padding(.horizontal, 12)
+                            .padding(.top, 10)
+                            .padding(.bottom, 8)
+
+                            Divider()
+                                .background(PhoneEntryTheme.grey050)
+
+                            ScrollView {
+                                LazyVStack(spacing: 0) {
+                                    ForEach(filteredCountries) { country in
                                         HStack {
                                             Text(country.flag)
                                             Text(country.name)
                                                 .multilineTextAlignment(.leading)
                                                 .truncationMode(.tail)
-                                                .frame(alignment: .leading)
-                                            Spacer()
+                                                .frame(maxWidth: .infinity, alignment: .leading)
                                             Text(country.dial_code)
                                         }
                                         .padding(.vertical, 10)
                                         .padding(.horizontal, 8)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 5)
-                                                .fill(PhoneEntryTheme.white000)
-                                        )
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            let selected = country
+                                            searchIsFocused = false
+                                            showDropDown = false
+                                            selectedData(
+                                                selected.flag,
+                                                selected.dial_code,
+                                                selected.code
+                                            )
+                                            searchQuery = ""
+                                        }
+                                        .foregroundStyle(.black)
                                     }
-                                    .foregroundStyle(.black)
-                                    .background(PhoneEntryTheme.white000)
                                 }
+                                .padding(.horizontal, 8)
                             }
+                            .modifier(KeepKeyboardOnScrollModifier())
                         }
                         .offset(y: 175)
                     }
                 }
+                .onChange(of: showDropDown) { isOpen in
+                    if !isOpen {
+                        searchQuery = ""
+                        searchIsFocused = false
+                    }
+                }
+        }
+    }
+
+    static func filterCountries(_ countries: [CountryCodeItem], query: String) -> [CountryCodeItem] {
+        let normalized = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !normalized.isEmpty else { return countries }
+        let dialQuery = normalized.hasPrefix("+") ? String(normalized.dropFirst()) : normalized
+        return countries.filter { country in
+            country.name.lowercased().contains(normalized)
+                || country.code.lowercased().contains(normalized)
+                || country.dial_code.lowercased().contains(normalized)
+                || country.dial_code.replacingOccurrences(of: "+", with: "").contains(dialQuery)
         }
     }
 }

@@ -122,7 +122,7 @@ fun PhoneEntryScreen(
                     CountryCodeDropdown(
                         countryFlag = countryFlag,
                         isDropDownOpen = isDropDownOpen,
-                        onDropDownToggle = { isDropDownOpen = it },
+                        onDropDownToggle = { open -> isDropDownOpen = open },
                         onDismissPhoneFocus = { focusManager.clearFocus() },
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -142,6 +142,7 @@ fun PhoneEntryScreen(
                                 isDropDownOpen = false
                             }
                         },
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -150,6 +151,7 @@ fun PhoneEntryScreen(
                 countries = countries,
                 isVisible = isDropDownOpen,
                 isLoading = isCountriesLoading,
+                searchHint = copy.countrySearchHint,
                 onCountrySelected = { country ->
                     dialCode = country.dialCode
                     countryIso = country.code
@@ -239,7 +241,9 @@ fun PhoneEntryScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (!keyboardOpen) {
+        // Keep layout stable while the country list is open so the first tap
+        // is not cancelled by the keyboard/footer jumping.
+        if (!keyboardOpen && !isDropDownOpen) {
             PhoneEntryFooter(copy = copy)
             Spacer(modifier = Modifier.height(50.dp))
         }
