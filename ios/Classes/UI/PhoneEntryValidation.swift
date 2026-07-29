@@ -4,7 +4,7 @@ import PhoneNumberKit
 /// Worldwide phone validation via PhoneNumberKit / libphonenumber metadata
 /// (bundled offline — no network call at runtime).
 enum PhoneEntryValidation {
-    private static let phoneNumberKit = PhoneNumberKit()
+    private static let phoneNumberKit = PhoneNumberUtility()
 
     static func digitCount(_ phone: String) -> Int {
         phone.filter(\.isNumber).count
