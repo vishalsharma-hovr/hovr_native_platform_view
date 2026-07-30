@@ -215,11 +215,7 @@ fun PhoneEntryScreen(
                     .background(PhoneEntryColors.green400, RoundedCornerShape(16.dp))
                     .clickable {
                         when {
-                            phoneNumber.isEmpty() -> showValidationError = true
-                            !PhoneEntryValidation.isValidPhone(phoneNumber, countryIso) -> {
-                                showValidationError = true
-                            }
-                            !canContinue -> showValidationError = true
+                            phoneNumber.isEmpty() || !canContinue -> showValidationError = true
                             else -> {
                                 showValidationError = false
                                 onSubmit(phoneNumber, dialCode, countryIso)

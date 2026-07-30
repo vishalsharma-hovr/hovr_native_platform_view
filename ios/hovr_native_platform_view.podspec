@@ -15,7 +15,6 @@ Native phone-entry PlatformView with typed method-channel contract for HOVR apps
   s.source_files     = 'Classes/**/*'
   s.resources        = ['Resources/**/*']
   s.dependency 'Flutter'
-  s.dependency 'PhoneNumberKit', '~> 4.0'
   s.platform         = :ios, '15.0'
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',

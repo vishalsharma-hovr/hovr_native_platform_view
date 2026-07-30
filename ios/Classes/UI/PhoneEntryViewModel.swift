@@ -39,17 +39,7 @@ final class PhoneEntryViewModel: ObservableObject {
     }
 
     func submit() {
-        if phoneNumber.isEmpty {
-            showValidationError = true
-            return
-        }
-
-        if !PhoneEntryValidation.isValidPhone(phone: phoneNumber, regionIso: countryIso) {
-            showValidationError = true
-            return
-        }
-
-        guard canContinue else {
+        if phoneNumber.isEmpty || !canContinue {
             showValidationError = true
             return
         }

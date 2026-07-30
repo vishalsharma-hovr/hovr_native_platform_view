@@ -7,20 +7,19 @@ import org.junit.Test
 
 class PhoneEntryValidationTest {
     @Test
-    fun canEnableContinue_usesRegionPossibleLength() {
-        assertFalse(PhoneEntryValidation.canEnableContinue("12345", "US"))
-        assertTrue(PhoneEntryValidation.canEnableContinue("2025550123", "US"))
-        // Many EU numbers are shorter than 10 national digits.
-        assertTrue(PhoneEntryValidation.canEnableContinue("612345678", "FR"))
+    fun canEnableContinue_requiresAtLeastOneDigit() {
+        assertFalse(PhoneEntryValidation.canEnableContinue("", "US"))
+        assertFalse(PhoneEntryValidation.canEnableContinue("   ", "US"))
+        assertTrue(PhoneEntryValidation.canEnableContinue("1", "US"))
+        assertTrue(PhoneEntryValidation.canEnableContinue("12345", "US"))
+        assertTrue(PhoneEntryValidation.canEnableContinue("2025550123", "FR"))
     }
 
     @Test
-    fun isValidPhone_validatesWorldwideRegions() {
-        assertTrue(PhoneEntryValidation.isValidPhone("2025550123", "US"))
-        assertFalse(PhoneEntryValidation.isValidPhone("12345", "US"))
+    fun isValidPhone_matchesCanEnableContinue() {
+        assertFalse(PhoneEntryValidation.isValidPhone("", "US"))
+        assertTrue(PhoneEntryValidation.isValidPhone("12", "DE"))
         assertTrue(PhoneEntryValidation.isValidPhone("9876543210", "IN"))
-        assertTrue(PhoneEntryValidation.isValidPhone("612345678", "FR"))
-        assertFalse(PhoneEntryValidation.isValidPhone("12", "DE"))
     }
 
     @Test

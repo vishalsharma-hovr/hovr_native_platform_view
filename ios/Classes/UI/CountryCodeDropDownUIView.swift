@@ -11,7 +11,6 @@ struct CountryCodeDropDownUIView: View {
     @State private var countryFlag = "🇨🇦"
     @State private var countryCode = "+1"
     @State private var countryCodeISO = "CA"
-    @State private var validMobileNumber = true
     @State private var iconName = "arrowtriangle.down.fill"
     @FocusState private var mobileNumberIsFocused: Bool
     @State private var mobileNumber = ""
@@ -45,7 +44,7 @@ struct CountryCodeDropDownUIView: View {
 
                     Rectangle()
                         .frame(height: 50)
-                        .foregroundStyle(validMobileNumber ? PhoneEntryTheme.errorCode : PhoneEntryTheme.grey025)
+                        .foregroundStyle(PhoneEntryTheme.grey025)
                         .cornerRadius(8)
                         .overlay {
                             ZStack {
@@ -73,21 +72,15 @@ struct CountryCodeDropDownUIView: View {
                                         .onChange(of: mobileNumber) { newValue in
                                             let digits = newValue.filter(\.isNumber)
                                             mobileNumber = digits
-                                            if PhoneEntryValidation.canEnableContinue(
-                                                phone: digits,
-                                                regionIso: countryCodeISO
-                                            ) {
-                                                validMobileNumber = true
-                                                onPhoneChanged(
-                                                    true,
-                                                    digits,
-                                                    countryCode,
-                                                    countryCodeISO
-                                                )
-                                            } else {
-                                                validMobileNumber = false
-                                                onPhoneChanged(false, "", "", "")
-                                            }
+                                            onPhoneChanged(
+                                                PhoneEntryValidation.canEnableContinue(
+                                                    phone: digits,
+                                                    regionIso: countryCodeISO
+                                                ),
+                                                digits,
+                                                countryCode,
+                                                countryCodeISO
+                                            )
                                         }
                                         .onChange(of: mobileNumberIsFocused) { focused in
                                             if focused, isDropDown {

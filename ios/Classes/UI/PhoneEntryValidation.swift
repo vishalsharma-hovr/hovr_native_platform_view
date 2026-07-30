@@ -1,25 +1,20 @@
 import Foundation
-import PhoneNumberKit
 
-/// Worldwide phone validation via PhoneNumberKit / libphonenumber metadata
-/// (bundled offline — no network call at runtime).
+/// Lightweight phone-entry helpers. Format / region validation is intentionally
+/// left to the backend — the UI only requires a non-empty national number.
 enum PhoneEntryValidation {
-    private static let phoneNumberKit = PhoneNumberUtility()
-
     static func digitCount(_ phone: String) -> Int {
         phone.filter(\.isNumber).count
     }
 
-    /// Enables Continue once the number is valid for [regionIso].
-    static func canEnableContinue(phone: String, regionIso: String) -> Bool {
-        isValidPhone(phone: phone, regionIso: regionIso)
+    /// Enables Continue when the national number has at least one digit.
+    static func canEnableContinue(phone: String, regionIso: String = "") -> Bool {
+        phone.contains(where: \.isNumber)
     }
 
-    /// Strict validity check for the selected country region.
-    static func isValidPhone(phone: String, regionIso: String) -> Bool {
-        guard !phone.isEmpty, !regionIso.isEmpty else { return false }
-        let region = regionIso.uppercased()
-        return phoneNumberKit.isValidPhoneNumber(phone, withRegion: region)
+    /// True when the national number has at least one digit.
+    static func isValidPhone(phone: String, regionIso: String = "") -> Bool {
+        canEnableContinue(phone: phone, regionIso: regionIso)
     }
 
     static func errorMessage(

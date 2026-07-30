@@ -4,6 +4,9 @@ All notable changes to this project are documented in this file.
 
 ## 0.1.2
 
+- Remove client-side phone number format / region validation (libphonenumber, PhoneNumberKit)
+- Enable Continue for any non-empty national number; keep empty-field error only
+- Drop Android `libphonenumber` and iOS `PhoneNumberKit` dependencies
 - Add country search in the phone-entry dropdown (name, ISO, dial code)
 - Localize search hint via `countrySearchHint` creation param
 - Vertically center dial code / number text in the phone field
